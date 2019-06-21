@@ -8,6 +8,10 @@ using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Threading;
 using VaderSharp;
+using System.Security.Cryptography;
+using System.Text;
+using System.Net.Http;
+using System.Web;
 
 namespace WindowsFormsApp1
 {
@@ -19,29 +23,33 @@ namespace WindowsFormsApp1
         [STAThread]
         static void Main()
         {
-            String[] Comments = Program.GetComments(25749043);
-            String[] Sentences = Program.GetLyrics();
+            String Translated = Program.GetTranslate("你妈死了");
+            int ocean_drive = 25749043;
+            int a_letter = 438456552;
+            String[] Comments = Program.GetComments(a_letter);
+            String[] Sentences = Program.GetLyrics(a_letter);
             ArrayList SArrayList = new ArrayList(Sentences);
             SArrayList.RemoveAt(0);
             Sentences = (string[])SArrayList.ToArray(typeof(string));
-            double[] score = Program.LoopTest(Sentences);
+            double[] score_lyric = Program.LoopTest(Sentences);
+            double[] score_comment = Program.LoopTest(Comments);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(score, Comments));
+            Application.Run(new Form1(score_comment, Comments));
         }
         private static String[] GetComments(int music_id)
         {
             NeteaseMusicAPI.NeteaseMusicAPI NMAPI = new NeteaseMusicAPI.NeteaseMusicAPI();
             int offset = 0;
-            JObject Response = NMAPI.GetSongComments(id:music_id,offset:offset);
+            JObject Response = NMAPI.GetSongComments(id: music_id, offset: offset);
             String[] C = new string[(int)Response["total"]];
             JToken Comments;
             while (true)
             {
                 Comments = Response["comments"];
-                for (int i = offset; i < offset + Comments.Count(); i++) 
+                for (int i = offset; i < offset + Comments.Count(); i++)
                 {
-                    C[i] = (String)Comments[i-offset]["content"];
+                    C[i] = (String)Comments[i - offset]["content"];
                 }
                 if (!(Boolean)Response["more"])
                 {
@@ -52,13 +60,10 @@ namespace WindowsFormsApp1
             }
             return C;
         }
-        private static String[] GetLyrics()
+        private static String[] GetLyrics(int music_id)
         {
             NeteaseMusicAPI.NeteaseMusicAPI NMAPI = new NeteaseMusicAPI.NeteaseMusicAPI();
-            JObject User = NMAPI.GetUserPlaylists(112321715);
-            JObject Playlist = NMAPI.GetPlaylistDetail(456306470);
-            
-            JObject Music = NMAPI.GetLyric(438456552);
+            JObject Music = NMAPI.GetLyric(id: music_id);
             String Lyric = (String)Music["lrc"]["lyric"];
             String[] Sentences = Lyric.Split('\n');
             return Sentences;
@@ -92,5 +97,34 @@ namespace WindowsFormsApp1
             }
             return score;
         }
+
+        static String GetTranslate(String Input)
+        {
+            String appid = "20190621000309477"; //你的appid
+            String secretKey = "0PvcG1kzzqZbONCai3eR"; //你的密钥
+            String myurl = "https://api.fanyi.baidu.com/api/trans/vip/translate";
+            String q = Input;
+            String fromLang = "zh";
+            String toLang = "en";
+
+            String salt = "1435660288";
+            String sign = appid + q + salt + secretKey;
+            
+            MD5 m1 = MD5.Create();
+            byte[] sign_bytes = m1.ComputeHash(Encoding.UTF8.GetBytes(sign));
+
+            StringBuilder SB = new StringBuilder();
+            for (int i = 0; i < sign_bytes.Length; i++)
+            {
+                SB.Append(sign_bytes[i].ToString("x2"));
+            }
+
+            myurl = myurl + "?appid=" + appid + "&q=" + HttpUtility.UrlEncode(q, Encoding.UTF8) + "&from=" + fromLang + "&to=" + toLang + "&salt" + salt + "&sign=" + SB.ToString();
+
+            HttpClient HC = new HttpClient();
+            String Result = HC.GetStringAsync(myurl).Result;
+            return Result;
+        }
     }
+
 }

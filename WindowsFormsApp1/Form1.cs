@@ -23,6 +23,9 @@ namespace WindowsFormsApp1
                 richTextBox1.Text += S;
                 richTextBox1.Text += "\n";
             }
+            richTextBox1.SelectAll();
+            Font font = new Font(FontFamily.GenericMonospace, 8, FontStyle.Regular);
+            this.richTextBox1.SelectionFont = font;
         }
 
         private void Chart1_Click(object sender, EventArgs e)
