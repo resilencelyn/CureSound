@@ -119,10 +119,11 @@ namespace WindowsFormsApp1
                 SB.Append(sign_bytes[i].ToString("x2"));
             }
 
-            myurl = myurl + "?appid=" + appid + "&q=" + HttpUtility.UrlEncode(q, Encoding.UTF8) + "&from=" + fromLang + "&to=" + toLang + "&salt" + salt + "&sign=" + SB.ToString();
+            myurl = myurl + "?appid=" + appid + "&q=" + HttpUtility.UrlEncode(q, Encoding.UTF8) + "&from=" + fromLang + "&to=" + toLang + "&salt=" + salt + "&sign=" + SB.ToString();
 
             HttpClient HC = new HttpClient();
             String Result = HC.GetStringAsync(myurl).Result;
+
             return Result;
         }
     }
