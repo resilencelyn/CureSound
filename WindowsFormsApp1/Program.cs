@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Net.Http;
 using System.Web;
+using Newtonsoft.Json;
 
 namespace WindowsFormsApp1
 {
@@ -31,6 +32,12 @@ namespace WindowsFormsApp1
             ArrayList SArrayList = new ArrayList(Sentences);
             SArrayList.RemoveAt(0);
             Sentences = (string[])SArrayList.ToArray(typeof(string));
+
+            for(int i = 0; i < Comments.Length; i++)
+            {
+                Comments[i] = Program.GetTranslate(Comments[i]);
+            }
+
             double[] score_lyric = Program.LoopTest(Sentences);
             double[] score_comment = Program.LoopTest(Comments);
             Application.EnableVisualStyles();
@@ -123,8 +130,9 @@ namespace WindowsFormsApp1
 
             HttpClient HC = new HttpClient();
             String Result = HC.GetStringAsync(myurl).Result;
+            JToken ResultObj = (JToken)JsonConvert.DeserializeObject(Result);
 
-            return Result;
+            return (String)ResultObj["trans_result"][0]["dst"];
         }
     }
 
