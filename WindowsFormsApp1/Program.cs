@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NeteaseMusicAPI;
 using Newtonsoft.Json.Linq;
-using System.Collections;
-using System.Threading;
 using VaderSharp;
 using System.Security.Cryptography;
 using System.Text;
@@ -24,26 +19,23 @@ namespace WindowsFormsApp1
         [STAThread]
         static void Main()
         {
-            String Translated = Program.GetTranslate("你妈死了");
-            int ocean_drive = 25749043;
-            int a_letter = 438456552;
-            String[] Comments = Program.GetComments(a_letter);
-            String[] Sentences = Program.GetLyrics(a_letter);
-            ArrayList SArrayList = new ArrayList(Sentences);
-            SArrayList.RemoveAt(0);
-            Sentences = (string[])SArrayList.ToArray(typeof(string));
-
-            for(int i = 0; i < Comments.Length; i++)
-            {
-                Comments[i] = Program.GetTranslate(Comments[i]);
-            }
-
-            double[] score_lyric = Program.LoopTest(Sentences);
-            double[] score_comment = Program.LoopTest(Comments);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(score_comment, Comments));
+            Application.Run(new Form1());
         }
+
+
+
+
+
+
+
+
+
+
+
+
+        #region:NLP-Based
         private static String[] GetComments(int music_id)
         {
             NeteaseMusicAPI.NeteaseMusicAPI NMAPI = new NeteaseMusicAPI.NeteaseMusicAPI();
@@ -84,27 +76,23 @@ namespace WindowsFormsApp1
         }
         static double[] LoopTest(String[] Input)
         {
-            String Temp = "";
             double[] score = new double[Input.Length];
-
             for (int i = 0; i < Input.Length; i++)
             {
+                String Temp;
                 if (Input[i].Length > 10)
                 {
                     Temp = Input[i].Substring(10);
-
                 }
                 else
                 {
                     Temp = "";
                 }
-                double CS = Program.GetScore(Temp);
+                double CS = GetScore(Temp);
                 score[i] = CS;
-                Console.WriteLine("歌词：" + Temp + "\n情绪评分：" + CS.ToString());
             }
             return score;
         }
-
         static String GetTranslate(String Input)
         {
             String appid = "20190621000309477"; //你的appid
@@ -134,6 +122,7 @@ namespace WindowsFormsApp1
 
             return (String)ResultObj["trans_result"][0]["dst"];
         }
+        #endregion
     }
 
 }
