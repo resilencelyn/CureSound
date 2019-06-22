@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using MP3Sharp;
+using DSP;
 
 
 namespace WindowsFormsApp1
@@ -31,7 +32,7 @@ namespace WindowsFormsApp1
 
             #region:Analyze MP3
             MP3Stream mp3 = new MP3Stream(fileName: "Music\\Sample.mp3");
-            byte[] buffer = new byte[8];
+            byte[] buffer = new byte[1024];
             int bytesReturned = 1;
             int totalBytesRead = 0;
             ArrayList wav = new ArrayList();
@@ -61,15 +62,37 @@ namespace WindowsFormsApp1
                 #endregion
             }
             mp3.Close();
-            int a = 2000;
-            chart1.Series[0].Points.DataBindY(wav.GetRange(600, a));
+
+            int[] wav_array_int = (int[])wav.ToArray(typeof(int));
+            double[] wav_array = new double[wav_array_int.Length];
+            for (int i = 0; i < wav_array_int.Length; i++)
+            {
+                wav_array[i] = (double)wav_array_int[i];
+            }
+
+            double[] fft = ComputeFFT(wav_array, 16384);
+
+            chart1.Series[0].Points.DataBindY(fft);
             chart1.Series[0].ChartType = SeriesChartType.Spline;
-            double c = (double)a / wav.Count;
-            textBox1.Text = c.ToString();
 
             #endregion
         }
-
+        private static double[] ComputeFFT(double[] fftRealInput, int sampleFrequency)
+        {
+            double[] fftRealOutput = new double[fftRealInput.Length];
+            double[] fftImaginaryOutput = new double[fftRealInput.Length];
+            double[] fftAmplitude = new double[fftRealInput.Length];
+            FourierTransform.Compute(
+                            1024,
+                            ref fftRealInput,
+                            null,
+                            fftRealOutput,
+                            fftImaginaryOutput,
+                            false);
+            FourierTransform.Norm(1024, fftRealOutput, fftImaginaryOutput, fftAmplitude);
+            return fftAmplitude;
+            //return FourierTransform.GetPeaks(fftAmplitude, null, sampleFrequency);
+        }
         private async void Button2_Click(object sender, EventArgs e)
         {
             #region:Get MP3

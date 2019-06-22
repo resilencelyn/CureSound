@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DSP, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSP.1.0.0\lib\DSP.dll</HintPath>
+    </Reference>
     <Reference Include="MP3Sharp, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MP3Sharp.1.0.4\lib\netstandard2.0\MP3Sharp.dll</HintPath>
     </Reference>

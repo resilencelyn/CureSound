@@ -32,3 +32,4 @@ C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\obj\Debug\WindowsForm
 C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csprojAssemblyReference.cache
 C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\bin\Debug\MP3Sharp.dll
 C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\bin\Debug\MP3Sharp.pdb
+C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\bin\Debug\DSP.dll
