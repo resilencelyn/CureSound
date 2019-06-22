@@ -28,13 +28,6 @@ namespace WindowsFormsApp1
 
 
 
-
-
-
-
-
-
-
         #region:NLP-Based
         private static String[] GetComments(int music_id)
         {
