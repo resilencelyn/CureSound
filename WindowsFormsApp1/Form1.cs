@@ -120,16 +120,28 @@ namespace WindowsFormsApp1
         #endregion
 
         KeyboardHook kbh;
+        Boolean[] KeyState;
+        public delegate void PE(AxWMPLib.AxWindowsMediaPlayer WMP, String FileName);
+        public PE pe;
+        public delegate void SE(AxWMPLib.AxWindowsMediaPlayer WMP);
+        public SE se;
+
         public Form1()
         {
             InitializeComponent();
-
-            
-
+            System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;
             kbh = new KeyboardHook();
             kbh.KeyPressEvent += KP;
             kbh.KeyUpEvent += new KeyEventHandler(KU);
             kbh.Start();
+            KeyState = new Boolean[3] { false, false, false };
+
+            pe = new PE(PlayEvent);
+            se = new SE(StopEvent);
+
+            Thread CM = new Thread(new ThreadStart(delegate { ChannelManager(); }));
+            CM.Start();
+
         }
         private void PlayEvent(AxWMPLib.AxWindowsMediaPlayer WMP,String FileName)
         {
@@ -143,35 +155,80 @@ namespace WindowsFormsApp1
                 WMP.Ctlcontrols.play();
             }
         }
+        private void StopEvent(AxWMPLib.AxWindowsMediaPlayer WMP)
+        {
+            if (WMP.playState == WMPLib.WMPPlayState.wmppsPlaying)
+            {
+                WMP.Ctlcontrols.stop();
+            }
+        }
         private void KP(object sender,KeyPressEventArgs e)
         {
 
             if (e.KeyChar == 'a')
             {
-                PlayEvent(WMP, "Music\\Sample.mp3");
+                //PlayEvent(WMP, "Music\\Sample.mp3");
+                KeyState[0] = true;
             }
-            if (e.KeyChar == 's')
+            else if (e.KeyChar == 's')
             {
-                PlayEvent(WMP2, "Music\\Sample2.mp3");
+                //PlayEvent(WMP2, "Music\\Sample2.mp3");
+                KeyState[1] = true;
             }
-            if (e.KeyChar == 'd')
+            else if (e.KeyChar == 'd')
             {
-                PlayEvent(WMP3, "Music\\Sample3.mp3");
+                //PlayEvent(WMP3, "Music\\Sample3.mp3");
+                KeyState[2] = true;
             }
         }
         private void KU(object sender, KeyEventArgs e)
         {
             if (e.KeyValue == (int)Keys.A)
             {
-                WMP.Ctlcontrols.stop();
+                //WMP.Ctlcontrols.stop();
+                KeyState[0] = false;
             }
-            if (e.KeyValue == (int)Keys.S)
+            else if (e.KeyValue == (int)Keys.S)
             {
-                WMP2.Ctlcontrols.stop();
+                //WMP2.Ctlcontrols.stop();
+                KeyState[1] = false;
             }
-            if (e.KeyValue == (int)Keys.D)
+            else if (e.KeyValue == (int)Keys.D)
             {
-                WMP3.Ctlcontrols.stop();
+                //WMP3.Ctlcontrols.stop();
+                KeyState[2] = false;
+            }
+        }
+
+        private void ChannelManager()
+        {
+            while (true)
+            {
+                textBox1.Text = KeyState[0].ToString() + " " + KeyState[1].ToString() + " " + KeyState[2].ToString();
+                if (KeyState[0])
+                {
+                    this.BeginInvoke(pe, WMP, "Music\\Sample.mp3");
+                }
+                else
+                {
+                    this.BeginInvoke(se, WMP);
+                }
+                if (KeyState[1])
+                {
+                    this.BeginInvoke(pe, WMP2, "Music\\Sample2.mp3");
+                }
+                else
+                {
+                    this.BeginInvoke(se, WMP2);
+                }
+                if (KeyState[2])
+                {
+                    this.BeginInvoke(pe, WMP3, "Music\\Sample3.mp3");
+                }
+                else
+                {
+                    this.BeginInvoke(se, WMP3);
+                }
             }
         }
     }
