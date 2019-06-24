@@ -33,3 +33,8 @@ C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\obj\Debug\WindowsForm
 C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\bin\Debug\MP3Sharp.dll
 C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\bin\Debug\MP3Sharp.pdb
 C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\bin\Debug\DSP.dll
+C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\bin\Debug\Interop.WMPLib.dll
+C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\bin\Debug\AxInterop.WMPLib.dll
+C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\obj\Debug\Interop.WMPLib.dll
+C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\obj\Debug\AxInterop.WMPLib.dll
+C:\Users\16413\Documents\GitHub\CureSound\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.ResolveComReference.cache
