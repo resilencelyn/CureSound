@@ -15,6 +15,7 @@ using MP3Sharp;
 using DSP;
 using System.Runtime.InteropServices;
 using System.Reflection;
+using System.Threading;
 
 namespace WindowsFormsApp1
 {
@@ -122,29 +123,40 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
+
+            
+
             kbh = new KeyboardHook();
             kbh.KeyPressEvent += KP;
             kbh.KeyUpEvent += new KeyEventHandler(KU);
             kbh.Start();
         }
+        private void PlayEvent(AxWMPLib.AxWindowsMediaPlayer WMP,String FileName)
+        {
+            if (WMP.playState == WMPLib.WMPPlayState.wmppsUndefined)
+            {
+                WMP.URL = @FileName;
+                WMP.Ctlcontrols.play();
+            }
+            else if (WMP.playState == WMPLib.WMPPlayState.wmppsStopped)
+            {
+                WMP.Ctlcontrols.play();
+            }
+        }
         private void KP(object sender,KeyPressEventArgs e)
         {
+
             if (e.KeyChar == 'a')
             {
-                if (WMP.playState != WMPLib.WMPPlayState.wmppsPlaying)
-                {
-                    WMP.URL = @"Music\\Sample.mp3";
-                    WMP.Ctlcontrols.play();
-                }
+                PlayEvent(WMP, "Music\\Sample.mp3");
             }
-            else if (e.KeyChar == 's')
+            if (e.KeyChar == 's')
             {
-                if (WMP2.playState != WMPLib.WMPPlayState.wmppsPlaying)
-                {
-                    WMP2.URL = @"Music\\Sample2.mp3";
-                    WMP2.Ctlcontrols.play();
-
-                }
+                PlayEvent(WMP2, "Music\\Sample2.mp3");
+            }
+            if (e.KeyChar == 'd')
+            {
+                PlayEvent(WMP3, "Music\\Sample3.mp3");
             }
         }
         private void KU(object sender, KeyEventArgs e)
@@ -156,6 +168,10 @@ namespace WindowsFormsApp1
             if (e.KeyValue == (int)Keys.S)
             {
                 WMP2.Ctlcontrols.stop();
+            }
+            if (e.KeyValue == (int)Keys.D)
+            {
+                WMP3.Ctlcontrols.stop();
             }
         }
     }
